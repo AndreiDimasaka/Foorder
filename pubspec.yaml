@@ -63,7 +63,11 @@ flutter:
   #   - images/a_dot_ham.jpeg
 
   assets:
-    - images/dashboard/choco-cake.jpg
+    - images/dashboard/banner.jpg
+    - images/dashboard/cake.jpg
+    - images/dashboard/pizza.jpg
+    - images/dashboard/smoothies.jpg
+    - images/dashboard/burger.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -76,6 +80,13 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: fonts/Montserrat/static/Montserrat-Black.ttf
+        - asset: fonts/Montserrat/static/Montserrat-Bold.ttf
+        - asset: fonts/Montserrat/static/Montserrat-Italic.ttf
+
   # fonts:
   #   - family: Schyler
   #     fonts:
