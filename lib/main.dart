@@ -226,6 +226,28 @@ class DashboardState extends State<Dashboard>
     }
 }
 
+
+class FoodDetails extends StatefulWidget{
+    const FoodDetails({super.key});
+
+    @override
+    State<FoodDetails> createState() => FoodDetailsState();
+
+}
+
+
+class FoodDetailsState extends State<FoodDetails>{
+
+    @override
+    Widget build(BuildContext context){
+        return Column(children: [
+
+
+            
+        ],);
+    }
+}
+
 class PictureButton extends StatelessWidget
 {
     final String imagePath;
