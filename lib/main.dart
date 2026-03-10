@@ -122,7 +122,7 @@ class MyApp extends StatelessWidget
         return MaterialApp(
             home: Material(
                 color: Colors.white,
-                child: Dashboard(),
+                child: FoodDetails(),
             ),
         );
     }
@@ -175,32 +175,41 @@ class DashboardState extends State<Dashboard>
                                 Expanded(
                                     child:
                                     SearchAnchor(
-                                        builder: (BuildContext context, SearchController controller) {
+                                        builder: (BuildContext context, SearchController controller)
+                                        {
                                             return SearchBar(
                                                 controller: controller,
                                                 padding: const WidgetStatePropertyAll<EdgeInsets>(
                                                     EdgeInsets.symmetric(horizontal: 16.0)),
-                                                onTap: () {
+                                                onTap: ()
+                                                {
                                                     controller.openView();
                                                 },
-                                                onChanged: (_) {
+                                                onChanged: (_)
+                                                {
                                                     controller.openView();
                                                 },
                                                 leading: const Icon(Icons.search),
                                             );
                                         },
-                                        suggestionsBuilder: (BuildContext context, SearchController controller) {
-                                            return List<ListTile>.generate(5, (int index) {
-                                                final String item = 'Suggestion $index';
-                                                return ListTile(
-                                                    title: Text(item),
-                                                    onTap: () {
-                                                        setState(() {
-                                                            controller.closeView(item);
-                                                        });
-                                                    },
-                                                );
-                                            });
+                                        suggestionsBuilder: (BuildContext context, SearchController controller)
+                                        {
+                                            return List<ListTile>.generate(5, (int index)
+                                                {
+                                                    final String item = 'Suggestion $index';
+                                                    return ListTile(
+                                                        title: Text(item),
+                                                        onTap: ()
+                                                        {
+                                                            setState(()
+                                                                {
+                                                                    controller.closeView(item);
+                                                                }
+                                                            );
+                                                        },
+                                                    );
+                                                }
+                                            );
                                         },
                                     )
                                 )
@@ -227,7 +236,8 @@ class DashboardState extends State<Dashboard>
 }
 
 
-class FoodDetails extends StatefulWidget{
+class FoodDetails extends StatefulWidget
+{
     const FoodDetails({super.key});
 
     @override
@@ -236,15 +246,182 @@ class FoodDetails extends StatefulWidget{
 }
 
 
-class FoodDetailsState extends State<FoodDetails>{
+class FoodDetailsState extends State<FoodDetails>
+{
 
     @override
-    Widget build(BuildContext context){
-        return Column(children: [
-
-
-            
-        ],);
+    Widget build(BuildContext context)
+    {
+        String? selectedFlavor = "Vanilla";
+        final Size screenSize = MediaQuery.sizeOf(context);
+        final double screenWidth = screenSize.width;
+        final double screenHeight = screenSize.height;
+        final TextScaler scaler = MediaQuery.textScalerOf(context);
+        double scaledTextSize = scaler.scale(20);
+        return SingleChildScrollView(
+            child: 
+            Padding(
+                padding: EdgeInsetsGeometry.all(screenWidth * 0.04),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    spacing: 40,
+                    children: 
+                    [
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                                IconButton(
+                                    onPressed: ()
+                                    {
+                                    },
+                                    icon: Icon(Icons.arrow_back),
+                                ),
+                                Text(
+                                    "Order Details",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontFamily: 'Montserrat',
+                                        letterSpacing: 2,
+                                        fontSize: scaledTextSize
+                                    )
+                                ),
+                                IconButton(
+                                    onPressed: ()
+                                    {
+                                    },
+                                    icon: Icon(Icons.favorite)
+                                )
+                            ],
+                        ),
+                        Container(
+                            height: screenHeight * 0.30,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+                                boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 5),
+                                    ),
+                                ],
+                                image: DecorationImage(
+                                    image: AssetImage('images/dashboard/cake.jpg'),
+                                    fit: BoxFit.cover,
+                                ),
+                            ),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                )
+                            )
+                        ),
+                        Container(
+                            height: screenHeight * 0.40,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: const Border(
+                                    left: BorderSide(color: Colors.black, width: 1.0),
+                                    right: BorderSide(color: Colors.black, width: 1.0),
+                                ),
+                                boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black.withOpacity(0.05),
+                                        blurRadius: 15,
+                                        offset: const Offset(0, 8),
+                                    )
+                                ],
+                            ),
+                            child: Column(
+                                children: [
+                                    Container(
+                                        width: double.infinity,
+                                        padding: const EdgeInsets.symmetric(vertical: 12),
+                                        decoration: BoxDecoration(
+                                            color: Colors.grey[50],
+                                            border: Border(
+                                                bottom: BorderSide(color: Colors.grey[200]!, width: 1),
+                                            ),
+                                        ),
+                                        child: Text(
+                                            "CAKE FLAVOR", 
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                letterSpacing: 3,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: scaledTextSize * 0.8,
+                                                color: Colors.black87,
+                                            ),
+                                        ),
+                                    ),
+                                    RadioListTile<String>(
+                                        title: const Text("Rich Chocolate"),
+                                        subtitle: const Text("Decadent dark cocoa with silky fudge ganache"),
+                                        value: "Chocolate",
+                                        groupValue: selectedFlavor,
+                                        activeColor: Colors.black,
+                                        onChanged: (String? value) {
+                                            setState(() {
+                                                selectedFlavor = value;
+                                            });
+                                        },
+                                    ),
+                                    RadioListTile<String>(
+                                        title: const Text("Classic Vanilla"),
+                                        subtitle: const Text("Madagascar Bourbon vanilla with whipped buttercream"),
+                                        value: "Chocolate",
+                                        groupValue: selectedFlavor,
+                                        activeColor: Colors.black,
+                                        onChanged: (String? value) {
+                                            setState(() {
+                                                selectedFlavor = value;
+                                            });
+                                        },
+                                    ),
+                                    RadioListTile<String>(
+                                        title: const Text("Red Velvet"),
+                                        subtitle: const Text("Velvety smooth with cream cheese frosting"),
+                                        value: "Chocolate",
+                                        groupValue: selectedFlavor,
+                                        activeColor: Colors.black,
+                                        onChanged: (String? value) {
+                                            setState(() {
+                                                selectedFlavor = value;
+                                            });
+                                        },
+                                    ),
+                                    RadioListTile<String>(
+                                        title: const Text("Strawberry"),
+                                        subtitle: const Text("Fresh farm-picked berries with a light chantilly cream"),
+                                        value: "Chocolate",
+                                        groupValue: selectedFlavor,
+                                        activeColor: Colors.black,
+                                        onChanged: (String? value) {
+                                            setState(() {
+                                                selectedFlavor = value;
+                                            });
+                                        },
+                                    ),
+                            RadioListTile<String>(
+                                title: const Text("Ube Custard"),
+                                subtitle: const Text("Authentic Halaya purple yam with a silky leche flan core"),
+                                value: "Chocolate",
+                                groupValue: selectedFlavor,
+                                activeColor: Colors.black,
+                                onChanged: (String? value) {
+                                    setState(() {
+                                        selectedFlavor = value;
+                                    });
+                                },
+                            ),
+                                ],
+                            )
+                        )
+                    ]
+                )
+            )
+        );
     }
 }
 
