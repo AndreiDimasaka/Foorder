@@ -38,7 +38,6 @@ class OrderDetails
 
 }
 
-
 class Cake
 {
     final String flavor;
@@ -81,7 +80,6 @@ class Cake
     }
 }
 
-
 class FoodDisplay
 {
     final double basePrice;
@@ -94,7 +92,6 @@ class FoodDisplay
         required this.foodName
     });
 
-
 }
 
 final List<FoodDisplay> foodList = [
@@ -103,9 +100,6 @@ final List<FoodDisplay> foodList = [
     FoodDisplay(basePrice: 15.00, displayImagePath: "images/dashboard/burger.jpg", foodName: "Burger"),
     FoodDisplay(basePrice: 17.00, displayImagePath: "images/dashboard/smoothies.jpg", foodName: "Smoothie")
 ];
-
-
-
 
 void main()
 {
@@ -128,7 +122,6 @@ class MyApp extends StatelessWidget
     }
 }
 
-
 class Dashboard extends StatefulWidget
 {
     const Dashboard({super.key});
@@ -136,7 +129,6 @@ class Dashboard extends StatefulWidget
     @override
     State<Dashboard> createState() => DashboardState();
 }
-
 
 class DashboardState extends State<Dashboard>
 {
@@ -150,8 +142,7 @@ class DashboardState extends State<Dashboard>
 
         return
         SingleChildScrollView(
-            child:
-            Padding(
+            child: Padding(
                 padding: EdgeInsetsGeometry.all(screenWidth * 0.02),
                 child:
                 Column(
@@ -235,7 +226,6 @@ class DashboardState extends State<Dashboard>
     }
 }
 
-
 class FoodDetails extends StatefulWidget
 {
     const FoodDetails({super.key});
@@ -245,22 +235,21 @@ class FoodDetails extends StatefulWidget
 
 }
 
-
 class FoodDetailsState extends State<FoodDetails>
 {
 
     @override
     Widget build(BuildContext context)
     {
-        String? selectedFlavor = "Vanilla";
+        String? selectedFlavor = "Classic Vanilla";
         final Size screenSize = MediaQuery.sizeOf(context);
         final double screenWidth = screenSize.width;
         final double screenHeight = screenSize.height;
         final TextScaler scaler = MediaQuery.textScalerOf(context);
         double scaledTextSize = scaler.scale(20);
+
         return SingleChildScrollView(
-            child: 
-            Padding(
+            child: Padding(
                 padding: EdgeInsetsGeometry.all(screenWidth * 0.04),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -307,7 +296,7 @@ class FoodDetailsState extends State<FoodDetails>
                                 ],
                                 image: DecorationImage(
                                     image: AssetImage('images/dashboard/cake.jpg'),
-                                    fit: BoxFit.cover,
+                                    fit: BoxFit.fill,
                                 ),
                             ),
                             child: Container(
@@ -333,9 +322,9 @@ class FoodDetailsState extends State<FoodDetails>
                                 ],
                             ),
                             child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                     Container(
-                                        width: double.infinity,
                                         padding: const EdgeInsets.symmetric(vertical: 12),
                                         decoration: BoxDecoration(
                                             color: Colors.grey[50],
@@ -361,10 +350,13 @@ class FoodDetailsState extends State<FoodDetails>
                                         value: "Chocolate",
                                         groupValue: selectedFlavor,
                                         activeColor: Colors.black,
-                                        onChanged: (String? value) {
-                                            setState(() {
-                                                selectedFlavor = value;
-                                            });
+                                        onChanged: (String? value)
+                                        {
+                                            setState(()
+                                                {
+                                                    selectedFlavor = value;
+                                                }
+                                            );
                                         },
                                     ),
                                     RadioListTile<String>(
@@ -373,10 +365,13 @@ class FoodDetailsState extends State<FoodDetails>
                                         value: "Chocolate",
                                         groupValue: selectedFlavor,
                                         activeColor: Colors.black,
-                                        onChanged: (String? value) {
-                                            setState(() {
-                                                selectedFlavor = value;
-                                            });
+                                        onChanged: (String? value)
+                                        {
+                                            setState(()
+                                                {
+                                                    selectedFlavor = value;
+                                                }
+                                            );
                                         },
                                     ),
                                     RadioListTile<String>(
@@ -385,10 +380,13 @@ class FoodDetailsState extends State<FoodDetails>
                                         value: "Chocolate",
                                         groupValue: selectedFlavor,
                                         activeColor: Colors.black,
-                                        onChanged: (String? value) {
-                                            setState(() {
-                                                selectedFlavor = value;
-                                            });
+                                        onChanged: (String? value)
+                                        {
+                                            setState(()
+                                                {
+                                                    selectedFlavor = value;
+                                                }
+                                            );
                                         },
                                     ),
                                     RadioListTile<String>(
@@ -397,30 +395,123 @@ class FoodDetailsState extends State<FoodDetails>
                                         value: "Chocolate",
                                         groupValue: selectedFlavor,
                                         activeColor: Colors.black,
-                                        onChanged: (String? value) {
-                                            setState(() {
-                                                selectedFlavor = value;
-                                            });
+                                        onChanged: (String? value)
+                                        {
+                                            setState(()
+                                                {
+                                                    selectedFlavor = value;
+                                                }
+                                            );
                                         },
                                     ),
-                            RadioListTile<String>(
-                                title: const Text("Ube Custard"),
-                                subtitle: const Text("Authentic Halaya purple yam with a silky leche flan core"),
-                                value: "Chocolate",
-                                groupValue: selectedFlavor,
-                                activeColor: Colors.black,
-                                onChanged: (String? value) {
-                                    setState(() {
-                                        selectedFlavor = value;
-                                    });
-                                },
-                            ),
+                                    RadioListTile<String>(
+                                        title: const Text("Ube Custard"),
+                                        subtitle: const Text("Authentic Halaya purple yam with a silky leche flan core"),
+                                        value: "Chocolate",
+                                        groupValue: selectedFlavor,
+                                        activeColor: Colors.black,
+                                        onChanged: (String? value)
+                                        {
+                                            setState(()
+                                                {
+                                                    selectedFlavor = value;
+                                                }
+                                            );
+                                        },
+                                    ),
+                                ]
+                            )
+                        ),
+                        Container(
+                            height: screenHeight * 0.40,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: const Border(
+                                    left: BorderSide(color: Colors.black, width: 1.0),
+                                    right: BorderSide(color: Colors.black, width: 1.0),
+                                ),
+                                boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black.withOpacity(0.05),
+                                        blurRadius: 15,
+                                        offset: const Offset(0, 8),
+                                    )
                                 ],
+                            ),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                    Container(
+                                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 40),
+                                        decoration: BoxDecoration(
+                                            color: Colors.grey[50],
+                                            border: Border(
+                                                bottom: BorderSide(color: Colors.grey[200]!, width: 1),
+                                            ),
+                                        ),
+                                        child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                                Text(
+                                                    "CAKE SIZE",
+                                                    textAlign: TextAlign.start,
+                                                    style: TextStyle(
+                                                        fontFamily: 'Montserrat',
+                                                        letterSpacing: 3,
+                                                        fontWeight: FontWeight.w600,
+                                                        fontSize: scaledTextSize * 0.8,
+                                                        color: Colors.black87,
+                                                    ),
+                                                ),
+                                                Text(
+                                                    "PRICE",
+                                                    textAlign: TextAlign.end,
+                                                    style: TextStyle(
+                                                        fontFamily: 'Montserrat',
+                                                        letterSpacing: 3,
+                                                        fontWeight: FontWeight.w600,
+                                                        fontSize: scaledTextSize * 0.8,
+                                                        color: Colors.black87,
+                                                    ),
+                                                ),
+                                            ],
+                                        )
+                                    ),
+                                    Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                            Text(
+                                                "CAKE SIZE",
+                                                textAlign: TextAlign.start,
+                                                style: TextStyle(
+                                                    fontFamily: 'Montserrat',
+                                                    letterSpacing: 3,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: scaledTextSize * 0.8,
+                                                    color: Colors.black87,
+                                                ),
+                                            ),
+                                            Text(
+                                                "PRICE",
+                                                textAlign: TextAlign.end,
+                                                style: TextStyle(
+                                                    fontFamily: 'Montserrat',
+                                                    letterSpacing: 3,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: scaledTextSize * 0.8,
+                                                    color: Colors.black87,
+                                                ),
+                                            ),
+
+                                        ],
+                                    )
+                                ]
                             )
                         )
-                    ]
+                    ],
                 )
-            )
+            ),
         );
     }
 }
@@ -488,6 +579,4 @@ class PictureButton extends StatelessWidget
             )
         );
     }
-
-
 }
