@@ -63,6 +63,11 @@ flutter:
   #   - images/a_dot_ham.jpeg
 
   assets:
+    - images/cakes/chocolatecake.jpg
+    - images/cakes/vanillacake.jpg
+    - images/cakes/redvelvetcake.jpg
+    - images/cakes/strawberrycake.jpg
+    - images/cakes/ubecake.jpg
     - images/dashboard/banner.jpg
     - images/dashboard/cake.jpg
     - images/dashboard/pizza.jpg

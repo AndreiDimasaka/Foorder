@@ -47,6 +47,7 @@ class Cake
     final bool extraNuts;
     final bool extraSprinkles;
     final bool extraFigurine;
+    final String imagePath;
 
     Cake({
         required this.flavor, 
@@ -55,7 +56,8 @@ class Cake
         required this.extraChocolates, 
         required this.extraNuts, 
         required this.extraSprinkles, 
-        required this.extraFigurine
+        required this.extraFigurine,
+        required this.imagePath
     });
 
     Cake copyWith({
@@ -66,6 +68,7 @@ class Cake
         bool? extraNuts,
         bool? extraSprinkles,
         bool? extraFigurine,
+        String? imagePath
     })
     {
         return Cake(
@@ -75,7 +78,8 @@ class Cake
             extraChocolates: extraChocolates ?? this.extraChocolates,
             extraNuts: extraNuts ?? this.extraNuts,
             extraSprinkles: extraSprinkles ?? this.extraSprinkles,
-            extraFigurine: extraFigurine ?? this.extraFigurine
+            extraFigurine: extraFigurine ?? this.extraFigurine,
+            imagePath: imagePath ?? this.imagePath
         );
     }
 }
@@ -85,17 +89,20 @@ class FoodDisplay
     final double basePrice;
     final String displayImagePath;
     final String foodName;
+    final void Function(BuildContext context)? onTap;
 
     FoodDisplay({
         required this.basePrice,
         required this.displayImagePath,
-        required this.foodName
+        required this.foodName,
+        this.onTap
     });
 
 }
 
 final List<FoodDisplay> foodList = [
-    FoodDisplay(basePrice: 20.00, displayImagePath: "images/dashboard/cake.jpg", foodName: "Cake"),
+    FoodDisplay(basePrice: 20.00, displayImagePath: "images/dashboard/cake.jpg", foodName: "Cake",
+        onTap: (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => FoodDetails()))),
     FoodDisplay(basePrice: 10.00, displayImagePath: "images/dashboard/pizza.jpg", foodName: "Pizza"),
     FoodDisplay(basePrice: 15.00, displayImagePath: "images/dashboard/burger.jpg", foodName: "Burger"),
     FoodDisplay(basePrice: 17.00, displayImagePath: "images/dashboard/smoothies.jpg", foodName: "Smoothie")
@@ -116,7 +123,7 @@ class MyApp extends StatelessWidget
         return MaterialApp(
             home: Material(
                 color: Colors.white,
-                child: CustomerDetails()
+                child: Dashboard()
             ),
         );
     }
@@ -214,10 +221,18 @@ class DashboardState extends State<Dashboard>
                             mainAxisSpacing: screenHeight * 0.02,
                             crossAxisCount: isTablet ? 4 : 2,
                             childAspectRatio: 0.8,
-                            children: [
-                                for (var item in foodList)
-                                    PictureButton(imagePath: item.displayImagePath, price: item.basePrice, foodName: item.foodName),
-                            ]
+                            children: foodList.map((food)
+                                {
+                                    return PictureButton(
+                                        imagePath: food.displayImagePath,
+                                        price: food.basePrice,
+                                        foodName: food.foodName,
+                                        onTap: food.onTap != null
+                                            ? () => food.onTap!(context)
+                                            : null,
+                                    );
+                                }
+                            ).toList(),
                         )
                     ]
                 )
@@ -245,747 +260,775 @@ class FoodDetailsState extends State<FoodDetails>
         extraNuts: false,
         extraSprinkles: false,
         extraFigurine: false,
+        imagePath: 'images/dashboard/cake.jpg',
     );
+    bool heartPressed = false;
 
     @override
     Widget build(BuildContext context)
     {
-        String? selectedFlavor = "Classic Vanilla";
         final Size screenSize = MediaQuery.sizeOf(context);
         final double screenWidth = screenSize.width;
         final double screenHeight = screenSize.height;
         final TextScaler scaler = MediaQuery.textScalerOf(context);
         double scaledTextSize = scaler.scale(20);
 
-        return SingleChildScrollView(
-            child: Padding(
-                padding: EdgeInsetsGeometry.all(screenWidth * 0.04),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    spacing: 40,
-                    children: 
-                    [
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                                IconButton(
-                                    onPressed: ()
-                                    {
-                                    },
-                                    icon: Icon(Icons.arrow_back),
-                                ),
-                                Text(
-                                    "ORDER DETAILS",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontFamily: 'Montserrat',
-                                        letterSpacing: 3,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: scaledTextSize * 1.5,
-                                        color: Colors.black87,
+        return Scaffold(
+            backgroundColor: Colors.white,
+            body: SingleChildScrollView(
+                child: Padding(
+                    padding: EdgeInsetsGeometry.all(screenWidth * 0.04),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        spacing: 40,
+                        children: 
+                        [
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                    IconButton(
+                                        onPressed: ()
+                                        {
+                                            Navigator.pop(context);
+                                        },
+                                        icon: Icon(Icons.arrow_back),
                                     ),
-                                ),
-                                IconButton(
-                                    onPressed: ()
-                                    {
-                                    },
-                                    icon: Icon(Icons.favorite)
-                                )
-                            ],
-                        ),
-                        Container(
-                            height: screenHeight * 0.30,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
-                                boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.black.withOpacity(0.1),
-                                        blurRadius: 10,
-                                        offset: const Offset(0, 5),
+                                    Text(
+                                        "ORDER DETAILS",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontFamily: 'Montserrat',
+                                            letterSpacing: 3,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: scaledTextSize * 1.5,
+                                            color: Colors.black87,
+                                        ),
                                     ),
+                                    IconButton(
+                                        onPressed: ()
+                                        {
+                                            setState(()
+                                                {
+                                                    heartPressed = !heartPressed;
+                                                }
+                                            );
+                                        },
+                                        icon: Icon(
+                                            Icons.favorite,
+                                            color: heartPressed ? Colors.red : Colors.grey
+                                        ),
+                                    )
                                 ],
-                                image: DecorationImage(
-                                    image: AssetImage('images/dashboard/cake.jpg'),
-                                    fit: BoxFit.fill,
-                                ),
                             ),
-                            child: Container(
+                            Container(
+                                height: screenHeight * 0.30,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 1),
+                                    boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.black.withValues(alpha: 0.1),
+                                            blurRadius: 10,
+                                            offset: const Offset(0, 5),
+                                        ),
+                                    ],
+                                    image: DecorationImage(
+                                        image: AssetImage(myCake.imagePath),
+                                        fit: BoxFit.fill,
+                                    ),
+                                ),
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                    )
                                 )
-                            )
-                        ),
-                        Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: const Border(
-                                    left: BorderSide(color: Colors.black, width: 1.0),
-                                    right: BorderSide(color: Colors.black, width: 1.0),
-                                ),
-                                boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.black.withOpacity(0.05),
-                                        blurRadius: 15,
-                                        offset: const Offset(0, 8),
-                                    )
-                                ],
                             ),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                    Container(
-                                        padding: const EdgeInsets.symmetric(vertical: 12),
-                                        decoration: BoxDecoration(
-                                            color: Colors.grey[50],
-                                            border: Border(
-                                                bottom: BorderSide(color: Colors.grey[200]!, width: 1),
-                                            ),
-                                        ),
-                                        child: Text(
-                                            "CAKE FLAVOR", 
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontFamily: 'Montserrat',
-                                                letterSpacing: 3,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: scaledTextSize * 1.2,
-                                                color: Colors.black87,
-                                            ),
-                                        ),
+                            Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: const Border(
+                                        left: BorderSide(color: Colors.black, width: 1.0),
+                                        right: BorderSide(color: Colors.black, width: 1.0),
                                     ),
-                                    RadioListTile<String>(
-                                        title: Text(
-                                            "Rich Chocolate",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 1,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black87,
-                                            ),
-                                        ),
-                                        subtitle: Text(
-                                            "Decadent dark cocoa with silky fudge ganache",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 0.8,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black87,
-                                            ),
-                                        ),
-                                        value: "Chocolate",
-                                        groupValue: selectedFlavor,
-                                        activeColor: Colors.black,
-                                        onChanged: (String? value)
-                                        {
-                                            setState(()
-                                                {
-                                                    selectedFlavor = value;
-                                                }
-                                            );
-                                        },
-                                    ),
-                                    RadioListTile<String>(
-                                        title: Text(
-                                            "Classic Vanilla",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 1,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black87,
-                                            ),
-                                        ),
-                                        subtitle: Text(
-                                            "Madagascar Bourbon vanilla with whipped buttercream",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 0.8,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black87,
-                                            ),
-                                        ),
-                                        value: "Chocolate",
-                                        groupValue: selectedFlavor,
-                                        activeColor: Colors.black,
-                                        onChanged: (String? value)
-                                        {
-                                            setState(()
-                                                {
-                                                    selectedFlavor = value;
-                                                }
-                                            );
-                                        },
-                                    ),
-                                    RadioListTile<String>(
-                                        title: Text(
-                                            "Red Velvet",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 1,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black87,
-                                            ),
-                                        ),
-                                        subtitle: Text(
-                                            "Velvety smooth with cream cheese frosting",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 0.8,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black87,
-                                            ),
-                                        ),
-                                        value: "Chocolate",
-                                        groupValue: selectedFlavor,
-                                        activeColor: Colors.black,
-                                        onChanged: (String? value)
-                                        {
-                                            setState(()
-                                                {
-                                                    selectedFlavor = value;
-                                                }
-                                            );
-                                        },
-                                    ),
-                                    RadioListTile<String>(
-                                        title: Text(
-                                            "Strawberry",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 1,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black87,
-                                            ),
-                                        ),
-                                        subtitle: Text(
-                                            "Fresh farm-picked berries with a light chantilly cream",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 0.8,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black87,
-                                            ),
-                                        ),
-                                        value: "Chocolate",
-                                        groupValue: selectedFlavor,
-                                        activeColor: Colors.black,
-                                        onChanged: (String? value)
-                                        {
-                                            setState(()
-                                                {
-                                                    selectedFlavor = value;
-                                                }
-                                            );
-                                        },
-                                    ),
-                                    RadioListTile<String>(
-                                        title: Text("Ube Custard",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 1,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black87,
-                                            ),
-                                        ),
-                                        subtitle: Text(
-                                            "Authentic Halaya purple yam with a silky leche flan core",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 0.8,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black87,
-                                            ),
-                                        ),
-                                        value: "Chocolate",
-                                        groupValue: selectedFlavor,
-                                        activeColor: Colors.black,
-                                        onChanged: (String? value)
-                                        {
-                                            setState(()
-                                                {
-                                                    selectedFlavor = value;
-                                                }
-                                            );
-                                        },
-                                    ),
-                                ]
-                            )
-                        ),
-                        Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: const Border(
-                                    left: BorderSide(color: Colors.black, width: 1.0),
-                                    right: BorderSide(color: Colors.black, width: 1.0),
-                                ),
-                                boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.black.withOpacity(0.05),
-                                        blurRadius: 15,
-                                        offset: const Offset(0, 8),
-                                    )
-                                ],
-                            ),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                    Container(
-                                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 40),
-                                        decoration: BoxDecoration(
-                                            color: Colors.grey[50],
-                                            border: Border(
-                                                bottom: BorderSide(color: Colors.grey[200]!, width: 1),
-                                            ),
-                                        ),
-                                        child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                                Text(
-                                                    "CAKE SIZE",
-                                                    textAlign: TextAlign.start,
-                                                    style: TextStyle(
-                                                        fontFamily: 'Montserrat',
-                                                        letterSpacing: 3,
-                                                        fontWeight: FontWeight.w600,
-                                                        fontSize: scaledTextSize * 1.2,
-                                                        color: Colors.black87,
-                                                    ),
-                                                ),
-                                                Text(
-                                                    "PRICE",
-                                                    textAlign: TextAlign.end,
-                                                    style: TextStyle(
-                                                        fontFamily: 'Montserrat',
-                                                        letterSpacing: 3,
-                                                        fontWeight: FontWeight.w600,
-                                                        fontSize: scaledTextSize * 1.2,
-                                                        color: Colors.black87,
-                                                    ),
-                                                ),
-                                            ],
+                                    boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.black.withValues(alpha: 0.05),
+                                            blurRadius: 15,
+                                            offset: const Offset(0, 8),
                                         )
-                                    ),
-                                    RadioGroup(
-                                        groupValue: myCake.size,
-                                        onChanged: (String? value)
-                                        {
-                                            setState(()
-                                                {
-                                                    value = myCake.size;
-                                                }
-                                            );
-                                        }
-                                        ,
-                                        child: Column(
-                                            children: [
-                                                RadioListTile<String>(
-                                                    contentPadding: const EdgeInsets.only(right: 50),
-                                                    title: Text(
-                                                        "Small",
-                                                        style: TextStyle(
-                                                            fontSize: scaledTextSize * 1,
-                                                            fontFamily: 'Montserrat',
-                                                            fontWeight: FontWeight.w600,
-                                                            color: Colors.black87,
-                                                        )
-                                                    ),
-                                                    subtitle: Text(
-                                                        "6 inches",
-                                                        style: TextStyle(
-                                                            fontSize: scaledTextSize * 0.8,
-                                                            fontFamily: 'Montserrat',
-                                                            fontWeight: FontWeight.w500,
-                                                            color: Colors.black87,
+                                    ],
+                                ),
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                        Container(
+                                            padding: const EdgeInsets.symmetric(vertical: 12),
+                                            decoration: BoxDecoration(
+                                                color: Colors.grey[50],
+                                                border: Border(
+                                                    bottom: BorderSide(color: Colors.grey[200]!, width: 1),
+                                                ),
+                                            ),
+                                            child: Text(
+                                                "CAKE FLAVOR", 
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    fontFamily: 'Montserrat',
+                                                    letterSpacing: 3,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: scaledTextSize * 1.2,
+                                                    color: Colors.black87,
+                                                ),
+                                            ),
+                                        ),
+                                        RadioGroup(
+                                            groupValue: myCake.flavor,
+                                            onChanged: (String? value)
+                                            {
+                                                setState(()
+                                                    {
+                                                        myCake = myCake.copyWith(
+                                                            flavor: value,
+                                                            imagePath: getImagePath(value!)
+                                                        );
+                                                    }
+                                                );
+                                            },
+                                            child: Column(
+                                                children: [
+                                                    RadioListTile<String>(
+                                                        title: Text(
+                                                            "Rich Chocolate",
+                                                            style: TextStyle(
+                                                                fontSize: scaledTextSize * 1,
+                                                                fontFamily: 'Montserrat',
+                                                                fontWeight: FontWeight.w600,
+                                                                color: Colors.black87,
+                                                            ),
                                                         ),
+                                                        subtitle: Text(
+                                                            "Decadent dark cocoa with silky fudge ganache",
+                                                            style: TextStyle(
+                                                                fontSize: scaledTextSize * 0.8,
+                                                                fontFamily: 'Montserrat',
+                                                                fontWeight: FontWeight.w500,
+                                                                color: Colors.black87,
+                                                            ),
+                                                        ),
+                                                        value: "Rich Chocolate",
+                                                        activeColor: Colors.black,
+                                                    ),
+                                                    RadioListTile<String>(
+                                                        title: Text(
+                                                            "Classic Vanilla",
+                                                            style: TextStyle(
+                                                                fontSize: scaledTextSize * 1,
+                                                                fontFamily: 'Montserrat',
+                                                                fontWeight: FontWeight.w600,
+                                                                color: Colors.black87,
+                                                            ),
+                                                        ),
+                                                        subtitle: Text(
+                                                            "Madagascar Bourbon vanilla with whipped buttercream",
+                                                            style: TextStyle(
+                                                                fontSize: scaledTextSize * 0.8,
+                                                                fontFamily: 'Montserrat',
+                                                                fontWeight: FontWeight.w500,
+                                                                color: Colors.black87,
+                                                            ),
+                                                        ),
+                                                        value: "Classic Vanilla",
+                                                        activeColor: Colors.black,
 
                                                     ),
-                                                    secondary: Text(
-                                                        r"$25",
-                                                        style: TextStyle(
-                                                            fontSize: 24,
-                                                            fontFamily: 'Montserrat',
-                                                            fontWeight: FontWeight.w500,
-                                                            color: Colors.black87,
-                                                        ),),
-                                                    value: "Small",
-                                                    activeColor: Colors.black,
-                                                ),
-                                                RadioListTile<String>(
-                                                    contentPadding: const EdgeInsets.only(right: 50),
-                                                    title: Text(
-                                                        "Medium",
-                                                        style: TextStyle(
-                                                            fontSize: scaledTextSize * 1,
-                                                            fontFamily: 'Montserrat',
-                                                            fontWeight: FontWeight.w600,
-                                                            color: Colors.black87,
-                                                        )
-                                                    ),
-                                                    subtitle: Text(
-                                                        "8 inches",
-                                                        style: TextStyle(
-                                                            fontSize: scaledTextSize * 0.8,
-                                                            fontFamily: 'Montserrat',
-                                                            fontWeight: FontWeight.w500,
-                                                            color: Colors.black87,
+                                                    RadioListTile<String>(
+                                                        title: Text(
+                                                            "Red Velvet",
+                                                            style: TextStyle(
+                                                                fontSize: scaledTextSize * 1,
+                                                                fontFamily: 'Montserrat',
+                                                                fontWeight: FontWeight.w600,
+                                                                color: Colors.black87,
+                                                            ),
                                                         ),
+                                                        subtitle: Text(
+                                                            "Velvety smooth with cream cheese frosting",
+                                                            style: TextStyle(
+                                                                fontSize: scaledTextSize * 0.8,
+                                                                fontFamily: 'Montserrat',
+                                                                fontWeight: FontWeight.w500,
+                                                                color: Colors.black87,
+                                                            ),
+                                                        ),
+                                                        value: "Red Velvet",
+                                                        activeColor: Colors.black,
 
                                                     ),
-                                                    secondary: Text(
-                                                        r"$40",
-                                                        style: TextStyle(
-                                                            fontSize: 24,
-                                                            fontFamily: 'Montserrat',
-                                                            fontWeight: FontWeight.w500,
-                                                            color: Colors.black87,
-                                                        ),),
-                                                    value: "Medium",
-                                                    activeColor: Colors.black,
-                                                ),
-                                                RadioListTile<String>(
-                                                    contentPadding: const EdgeInsets.only(right: 50),
-                                                    title: Text(
-                                                        "Large",
-                                                        style: TextStyle(
-                                                            fontSize: scaledTextSize * 1,
-                                                            fontFamily: 'Montserrat',
-                                                            fontWeight: FontWeight.w600,
-                                                            color: Colors.black87,
-                                                        )
-                                                    ),
-                                                    subtitle: Text(
-                                                        "10 inches",
-                                                        style: TextStyle(
-                                                            fontSize: scaledTextSize * 0.8,
-                                                            fontFamily: 'Montserrat',
-                                                            fontWeight: FontWeight.w500,
-                                                            color: Colors.black87,
+                                                    RadioListTile<String>(
+                                                        title: Text(
+                                                            "Strawberry",
+                                                            style: TextStyle(
+                                                                fontSize: scaledTextSize * 1,
+                                                                fontFamily: 'Montserrat',
+                                                                fontWeight: FontWeight.w600,
+                                                                color: Colors.black87,
+                                                            ),
                                                         ),
+                                                        subtitle: Text(
+                                                            "Fresh farm-picked berries with a light chantilly cream",
+                                                            style: TextStyle(
+                                                                fontSize: scaledTextSize * 0.8,
+                                                                fontFamily: 'Montserrat',
+                                                                fontWeight: FontWeight.w500,
+                                                                color: Colors.black87,
+                                                            ),
+                                                        ),
+                                                        value: "Strawberry",
+                                                        activeColor: Colors.black,
 
                                                     ),
-                                                    secondary: Text(
-                                                        r"$60",
-                                                        style: TextStyle(
-                                                            fontSize: 24,
-                                                            fontFamily: 'Montserrat',
-                                                            fontWeight: FontWeight.w500,
-                                                            color: Colors.black87,
-                                                        ),),
-                                                    value: "Large",
-                                                    activeColor: Colors.black,
-                                                ),
-                                            ]
+                                                    RadioListTile<String>(
+                                                        title: Text("Ube Custard",
+                                                            style: TextStyle(
+                                                                fontSize: scaledTextSize * 1,
+                                                                fontFamily: 'Montserrat',
+                                                                fontWeight: FontWeight.w600,
+                                                                color: Colors.black87,
+                                                            ),
+                                                        ),
+                                                        subtitle: Text(
+                                                            "Authentic Halaya purple yam with a silky leche flan core",
+                                                            style: TextStyle(
+                                                                fontSize: scaledTextSize * 0.8,
+                                                                fontFamily: 'Montserrat',
+                                                                fontWeight: FontWeight.w500,
+                                                                color: Colors.black87,
+                                                            ),
+                                                        ),
+                                                        value: "Ube Custard",
+                                                        activeColor: Colors.black,
+                                                    ),
+                                                ]
+                                            )
                                         )
-                                    )
-                                ]
-                            )
-                        ),
-                        Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: const Border(
-                                    left: BorderSide(color: Colors.black, width: 1.0),
-                                    right: BorderSide(color: Colors.black, width: 1.0),
-                                ),
-                                boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.black.withOpacity(0.05),
-                                        blurRadius: 15,
-                                        offset: const Offset(0, 8),
-                                    )
-                                ],
+                                    ]
+                                )
                             ),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                            Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: const Border(
+                                        left: BorderSide(color: Colors.black, width: 1.0),
+                                        right: BorderSide(color: Colors.black, width: 1.0),
+                                    ),
+                                    boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.black.withValues(alpha: 0.05),
+                                            blurRadius: 15,
+                                            offset: const Offset(0, 8),
+                                        )
+                                    ],
+                                ),
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                        Container(
+                                            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 40),
+                                            decoration: BoxDecoration(
+                                                color: Colors.grey[50],
+                                                border: Border(
+                                                    bottom: BorderSide(color: Colors.grey[200]!, width: 1),
+                                                ),
+                                            ),
+                                            child: Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                    Text(
+                                                        "CAKE SIZE",
+                                                        textAlign: TextAlign.start,
+                                                        style: TextStyle(
+                                                            fontFamily: 'Montserrat',
+                                                            letterSpacing: 3,
+                                                            fontWeight: FontWeight.w600,
+                                                            fontSize: scaledTextSize * 1.2,
+                                                            color: Colors.black87,
+                                                        ),
+                                                    ),
+                                                    Text(
+                                                        "PRICE",
+                                                        textAlign: TextAlign.end,
+                                                        style: TextStyle(
+                                                            fontFamily: 'Montserrat',
+                                                            letterSpacing: 3,
+                                                            fontWeight: FontWeight.w600,
+                                                            fontSize: scaledTextSize * 1.2,
+                                                            color: Colors.black87,
+                                                        ),
+                                                    ),
+                                                ],
+                                            )
+                                        ),
+                                        RadioGroup(
+                                            groupValue: myCake.size,
+                                            onChanged: (String? value)
+                                            {
+                                                setState(()
+                                                    {
+                                                        myCake = myCake.copyWith(size: value);
+                                                    }
+                                                );
+                                            }
+                                            ,
+                                            child: Column(
+                                                children: [
+                                                    RadioListTile<String>(
+                                                        contentPadding: const EdgeInsets.only(right: 50),
+                                                        title: Text(
+                                                            "Small",
+                                                            style: TextStyle(
+                                                                fontSize: scaledTextSize * 1,
+                                                                fontFamily: 'Montserrat',
+                                                                fontWeight: FontWeight.w600,
+                                                                color: Colors.black87,
+                                                            )
+                                                        ),
+                                                        subtitle: Text(
+                                                            "6 inches",
+                                                            style: TextStyle(
+                                                                fontSize: scaledTextSize * 0.8,
+                                                                fontFamily: 'Montserrat',
+                                                                fontWeight: FontWeight.w500,
+                                                                color: Colors.black87,
+                                                            ),
+
+                                                        ),
+                                                        secondary: Text(
+                                                            r"$25",
+                                                            style: TextStyle(
+                                                                fontSize: 24,
+                                                                fontFamily: 'Montserrat',
+                                                                fontWeight: FontWeight.w500,
+                                                                color: Colors.black87,
+                                                            ),),
+                                                        value: "Small",
+                                                        activeColor: Colors.black,
+                                                    ),
+                                                    RadioListTile<String>(
+                                                        contentPadding: const EdgeInsets.only(right: 50),
+                                                        title: Text(
+                                                            "Medium",
+                                                            style: TextStyle(
+                                                                fontSize: scaledTextSize * 1,
+                                                                fontFamily: 'Montserrat',
+                                                                fontWeight: FontWeight.w600,
+                                                                color: Colors.black87,
+                                                            )
+                                                        ),
+                                                        subtitle: Text(
+                                                            "8 inches",
+                                                            style: TextStyle(
+                                                                fontSize: scaledTextSize * 0.8,
+                                                                fontFamily: 'Montserrat',
+                                                                fontWeight: FontWeight.w500,
+                                                                color: Colors.black87,
+                                                            ),
+
+                                                        ),
+                                                        secondary: Text(
+                                                            r"$40",
+                                                            style: TextStyle(
+                                                                fontSize: 24,
+                                                                fontFamily: 'Montserrat',
+                                                                fontWeight: FontWeight.w500,
+                                                                color: Colors.black87,
+                                                            ),),
+                                                        value: "Medium",
+                                                        activeColor: Colors.black,
+                                                    ),
+                                                    RadioListTile<String>(
+                                                        contentPadding: const EdgeInsets.only(right: 50),
+                                                        title: Text(
+                                                            "Large",
+                                                            style: TextStyle(
+                                                                fontSize: scaledTextSize * 1,
+                                                                fontFamily: 'Montserrat',
+                                                                fontWeight: FontWeight.w600,
+                                                                color: Colors.black87,
+                                                            )
+                                                        ),
+                                                        subtitle: Text(
+                                                            "10 inches",
+                                                            style: TextStyle(
+                                                                fontSize: scaledTextSize * 0.8,
+                                                                fontFamily: 'Montserrat',
+                                                                fontWeight: FontWeight.w500,
+                                                                color: Colors.black87,
+                                                            ),
+
+                                                        ),
+                                                        secondary: Text(
+                                                            r"$60",
+                                                            style: TextStyle(
+                                                                fontSize: 24,
+                                                                fontFamily: 'Montserrat',
+                                                                fontWeight: FontWeight.w500,
+                                                                color: Colors.black87,
+                                                            ),),
+                                                        value: "Large",
+                                                        activeColor: Colors.black,
+                                                    ),
+                                                ]
+                                            )
+                                        )
+                                    ]
+                                )
+                            ),
+                            Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: const Border(
+                                        left: BorderSide(color: Colors.black, width: 1.0),
+                                        right: BorderSide(color: Colors.black, width: 1.0),
+                                    ),
+                                    boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.black.withValues(alpha: 0.05),
+                                            blurRadius: 15,
+                                            offset: const Offset(0, 8),
+                                        )
+                                    ],
+                                ),
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                        Container(
+                                            padding: const EdgeInsets.symmetric(vertical: 12),
+                                            decoration: BoxDecoration(
+                                                color: Colors.grey[50],
+                                                border: Border(
+                                                    bottom: BorderSide(color: Colors.grey[200]!, width: 1),
+                                                ),
+                                            ),
+                                            child: Text(
+                                                "ADD ONS",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    fontFamily: 'Montserrat',
+                                                    letterSpacing: 3,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: scaledTextSize * 1.2,
+                                                    color: Colors.black87,
+                                                ),
+                                            ),
+                                        ),
+                                        CheckboxListTile(
+                                            title: Text(
+                                                "Assorted Fruits",
+                                                style: TextStyle(
+                                                    fontSize: scaledTextSize * 1,
+                                                    fontFamily: 'Montserrat',
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.black87,
+                                                )
+
+                                            ),
+                                            subtitle: Text(
+                                                "Hand-cut tropical and garden favorites",
+                                                style: TextStyle(
+                                                    fontFamily: 'Montserrat',
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: scaledTextSize * 0.8,
+                                                    color: Colors.black87,
+                                                ),
+
+                                            ),
+                                            secondary: Text(
+                                                r"$7",
+                                                style: TextStyle(
+                                                    fontFamily: 'Montserrat',
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: scaledTextSize * 0.8,
+                                                    color: Colors.black87,
+                                                ),
+
+                                            ),
+                                            value: myCake.extraFruits,
+                                            onChanged: (bool? value)
+                                            {
+                                                setState(()
+                                                    {
+                                                        myCake = myCake.copyWith(extraFruits: value);
+                                                    }
+                                                );
+                                            },
+                                            controlAffinity: ListTileControlAffinity.trailing,
+                                        ),
+                                        CheckboxListTile(
+                                            title: Text(
+                                                "Chocolate",
+                                                style: TextStyle(
+                                                    fontSize: scaledTextSize * 1,
+                                                    fontFamily: 'Montserrat',
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.black87,
+                                                )
+
+                                            ),
+                                            subtitle: Text(
+                                                "Crushed cacao nibs and fudge bits",
+                                                style: TextStyle(
+                                                    fontFamily: 'Montserrat',
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: scaledTextSize * 0.8,
+                                                    color: Colors.black87,
+                                                ),
+
+                                            ),
+                                            secondary: Text(
+                                                r"$5",
+                                                style: TextStyle(
+                                                    fontFamily: 'Montserrat',
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: scaledTextSize * 0.8,
+                                                    color: Colors.black87,
+                                                ),
+
+                                            ),
+                                            value: myCake.extraChocolates,
+                                            onChanged: (bool? value)
+                                            {
+                                                setState(()
+                                                    {
+                                                        myCake = myCake.copyWith(extraChocolates: value);
+                                                    }
+                                                );
+                                            },
+                                            controlAffinity: ListTileControlAffinity.trailing,
+                                        ),
+                                        CheckboxListTile(
+                                            title: Text(
+                                                "Assorted Nuts",
+                                                style: TextStyle(
+                                                    fontSize: scaledTextSize * 1,
+                                                    fontFamily: 'Montserrat',
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.black87,
+                                                )
+
+                                            ),
+                                            subtitle: Text(
+                                                "Premium selection of toasted seasonal nuts",
+                                                style: TextStyle(
+                                                    fontFamily: 'Montserrat',
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: scaledTextSize * 0.8,
+                                                    color: Colors.black87,
+                                                ),
+                                            ),
+                                            secondary: Text(
+                                                r"$5",
+                                                style: TextStyle(
+                                                    fontFamily: 'Montserrat',
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: scaledTextSize * 0.8,
+                                                    color: Colors.black87,
+                                                ),
+
+                                            ),
+                                            value: myCake.extraNuts,
+                                            onChanged: (bool? value)
+                                            {
+                                                setState(()
+                                                    {
+                                                        myCake = myCake.copyWith(extraNuts: value);
+                                                    }
+                                                );
+                                            },
+                                            controlAffinity: ListTileControlAffinity.trailing,
+                                        ),
+                                        CheckboxListTile(
+                                            title: Text(
+                                                "Sprinkles",
+                                                style: TextStyle(
+                                                    fontSize: scaledTextSize * 1,
+                                                    fontFamily: 'Montserrat',
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.black87,
+                                                )
+
+                                            ),
+                                            subtitle: Text(
+                                                "Sweet and crispy festive sugar pearls",
+                                                style: TextStyle(
+                                                    fontFamily: 'Montserrat',
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: scaledTextSize * 0.8,
+                                                    color: Colors.black87,
+                                                ),
+
+                                            ),
+                                            secondary: Text(
+                                                r"$1",
+                                                style: TextStyle(
+                                                    fontFamily: 'Montserrat',
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: scaledTextSize * 0.8,
+                                                    color: Colors.black87,
+                                                ),
+
+                                            ),
+                                            value: myCake.extraSprinkles,
+                                            onChanged: (bool? value)
+                                            {
+                                                setState(()
+                                                    {
+                                                        myCake = myCake.copyWith(extraSprinkles: value);
+                                                    }
+                                                );
+                                            },
+                                            controlAffinity: ListTileControlAffinity.trailing,
+                                        ),
+                                        CheckboxListTile(
+                                            title: Text(
+                                                "Figurine",
+                                                style: TextStyle(
+                                                    fontSize: scaledTextSize * 1,
+                                                    fontFamily: 'Montserrat',
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.black87,
+                                                )
+
+                                            ),
+                                            subtitle: Text(
+                                                "Hand crafted edible sugar character",
+                                                style: TextStyle(
+                                                    fontFamily: 'Montserrat',
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: scaledTextSize * 0.8,
+                                                    color: Colors.black87,
+                                                ),
+
+                                            ),
+                                            secondary: Text(
+                                                r"$15",
+                                                style: TextStyle(
+                                                    fontFamily: 'Montserrat',
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: scaledTextSize * 0.8,
+                                                    color: Colors.black87,
+                                                ),
+
+                                            ),
+                                            value: myCake.extraFigurine,
+                                            onChanged: (bool? value)
+                                            {
+                                                setState(()
+                                                    {
+                                                        myCake = myCake.copyWith(extraFigurine: value);
+                                                    }
+                                                );
+                                            },
+                                            controlAffinity: ListTileControlAffinity.trailing,
+                                        ),
+                                    ]
+                                )
+                            ),
+                            Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                spacing: 10,
                                 children: [
-                                    Container(
-                                        padding: const EdgeInsets.symmetric(vertical: 12),
-                                        decoration: BoxDecoration(
-                                            color: Colors.grey[50],
-                                            border: Border(
-                                                bottom: BorderSide(color: Colors.grey[200]!, width: 1),
+                                    ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.black,
+                                            foregroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(12),
                                             ),
+                                            elevation: 2,
                                         ),
+                                        onPressed: ()
+                                        {
+                                            if (myCake.size.isEmpty || myCake.flavor.isEmpty)
+                                            {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                    const SnackBar(content: Text("Please select a size or flavor")),
+                                                );
+                                                return;
+                                            }
+                                            else
+                                            {
+                                                Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerDetails()));
+                                            }
+                                        },
                                         child: Text(
-                                            "ADD ONS",
-                                            textAlign: TextAlign.center,
+                                            "CONFIRM ORDER",
                                             style: TextStyle(
-                                                fontFamily: 'Montserrat',
-                                                letterSpacing: 3,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: scaledTextSize * 1.2,
-                                                color: Colors.black87,
+                                                fontSize: scaledTextSize * 0.8,
+                                                fontFamily: 'Monserrat',
+                                                fontWeight: FontWeight.bold,
+                                                letterSpacing: 1.2,
                                             ),
                                         ),
                                     ),
-                                    CheckboxListTile(
-                                        title: Text(
-                                            "Assorted Fruits",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 1,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black87,
-                                            )
-
-                                        ),
-                                        subtitle: Text(
-                                            "Hand-cut tropical and garden favorites",
-                                            style: TextStyle(
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: scaledTextSize * 0.8,
-                                                color: Colors.black87,
+                                    ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.red,
+                                            foregroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(12),
                                             ),
-
+                                            elevation: 2,
                                         ),
-                                        secondary: Text(
-                                            r"$7",
-                                            style: TextStyle(
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: scaledTextSize * 0.8,
-                                                color: Colors.black87,
-                                            ),
-
-                                        ),
-                                        value: myCake.extraFruits,
-                                        onChanged: (bool? value)
+                                        onPressed: ()
                                         {
-                                            setState(()
-                                                {
-                                                    myCake = myCake.copyWith(extraFruits: value);
-                                                }
-                                            );
+                                            resetCake();
                                         },
-                                        controlAffinity: ListTileControlAffinity.trailing,
-                                    ),
-                                    CheckboxListTile(
-                                        title: Text(
-                                            "Chocolate",
+                                        child: Text(
+                                            "CANCEL",
                                             style: TextStyle(
-                                                fontSize: scaledTextSize * 1,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black87,
-                                            )
-
-                                        ),
-                                        subtitle: Text(
-                                            "Crushed cacao nibs and fudge bits",
-                                            style: TextStyle(
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
                                                 fontSize: scaledTextSize * 0.8,
-                                                color: Colors.black87,
-                                            ),
-
-                                        ),
-                                        secondary: Text(
-                                            r"$5",
-                                            style: TextStyle(
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: scaledTextSize * 0.8,
-                                                color: Colors.black87,
-                                            ),
-
-                                        ),
-                                        value: myCake.extraChocolates,
-                                        onChanged: (bool? value)
-                                        {
-                                            setState(()
-                                                {
-                                                    myCake = myCake.copyWith(extraChocolates: value);
-                                                }
-                                            );
-                                        },
-                                        controlAffinity: ListTileControlAffinity.trailing,
-                                    ),
-                                    CheckboxListTile(
-                                        title: Text(
-                                            "Assorted Nuts",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 1,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black87,
-                                            )
-
-                                        ),
-                                        subtitle: Text(
-                                            "Premium selection of toasted seasonal nuts",
-                                            style: TextStyle(
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: scaledTextSize * 0.8,
-                                                color: Colors.black87,
+                                                fontFamily: 'Monserrat',
+                                                fontWeight: FontWeight.bold,
+                                                letterSpacing: 1.2,
                                             ),
                                         ),
-                                        secondary: Text(
-                                            r"$5",
-                                            style: TextStyle(
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: scaledTextSize * 0.8,
-                                                color: Colors.black87,
-                                            ),
-
-                                        ),
-                                        value: myCake.extraNuts,
-                                        onChanged: (bool? value)
-                                        {
-                                            setState(()
-                                                {
-                                                    myCake = myCake.copyWith(extraNuts: value);
-                                                }
-                                            );
-                                        },
-                                        controlAffinity: ListTileControlAffinity.trailing,
-                                    ),
-                                    CheckboxListTile(
-                                        title: Text(
-                                            "Sprinkles",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 1,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black87,
-                                            )
-
-                                        ),
-                                        subtitle: Text(
-                                            "Sweet and crispy festive sugar pearls",
-                                            style: TextStyle(
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: scaledTextSize * 0.8,
-                                                color: Colors.black87,
-                                            ),
-
-                                        ),
-                                        secondary: Text(
-                                            r"$1",
-                                            style: TextStyle(
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: scaledTextSize * 0.8,
-                                                color: Colors.black87,
-                                            ),
-
-                                        ),
-                                        value: myCake.extraSprinkles,
-                                        onChanged: (bool? value)
-                                        {
-                                            setState(()
-                                                {
-                                                    myCake = myCake.copyWith(extraSprinkles: value);
-                                                }
-                                            );
-                                        },
-                                        controlAffinity: ListTileControlAffinity.trailing,
-                                    ),
-                                    CheckboxListTile(
-                                        title: Text(
-                                            "Figurine",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 1,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black87,
-                                            )
-
-                                        ),
-                                        subtitle: Text(
-                                            "Hand crafted edible sugar character",
-                                            style: TextStyle(
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: scaledTextSize * 0.8,
-                                                color: Colors.black87,
-                                            ),
-
-                                        ),
-                                        secondary: Text(
-                                            r"$15",
-                                            style: TextStyle(
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: scaledTextSize * 0.8,
-                                                color: Colors.black87,
-                                            ),
-
-                                        ),
-                                        value: myCake.extraFigurine,
-                                        onChanged: (bool? value)
-                                        {
-                                            setState(()
-                                                {
-                                                    myCake = myCake.copyWith(extraFigurine: value);
-                                                }
-                                            );
-                                        },
-                                        controlAffinity: ListTileControlAffinity.trailing,
                                     ),
                                 ]
                             )
-                        ),
-                        Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            spacing: 10,
-                            children: [
-                                ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.black,
-                                        foregroundColor: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
-                                        ),
-                                        elevation: 2,
-                                    ),
-                                    onPressed: ()
-                                    {
-                                        print("Ordering: ${myCake.size} ${myCake.flavor} cake");
-                                    },
-                                    child: Text(
-                                        "CONFIRM ORDER",
-                                        style: TextStyle(
-                                            fontSize: scaledTextSize * 0.8,
-                                            fontFamily: 'Monserrat',
-                                            fontWeight: FontWeight.bold,
-                                            letterSpacing: 1.2,
-                                        ),
-                                    ),
-                                ),
-                                ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.red,
-                                        foregroundColor: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
-                                        ),
-                                        elevation: 2,
-                                    ),
-                                    onPressed: ()
-                                    {
-                                        print("Ordering: ${myCake.size} ${myCake.flavor} cake");
-                                    },
-                                    child: Text(
-                                        "CANCEL",
-                                        style: TextStyle(
-                                            fontSize: scaledTextSize * 0.8,
-                                            fontFamily: 'Monserrat',
-                                            fontWeight: FontWeight.bold,
-                                            letterSpacing: 1.2,
-                                        ),
-                                    ),
-                                ),
-                            ]
-                        )
-                    ]
-                )
-            ),
+                        ]
+                    )
+                ),
+            )
+
+        );
+    }
+    String getImagePath(String flavor) {
+        switch (flavor) {
+            case 'Rich Chocolate':
+                return 'images/cakes/chocolatecake.jpg';
+            case 'Classic Vanilla':
+                return 'images/cakes/vanillacake.jpg';
+            case 'Red Velvet':
+                return 'images/cakes/redvelvetcake.jpg';
+            case 'Strawberry':
+                return 'images/cakes/strawberrycake.jpg';
+            case 'Ube Custard':
+                return 'images/cakes/ubecake.jpg';
+            default:
+                return 'images/dashboard/cake.jpg';
+        }
+    }
+    void resetCake()
+    {
+        myCake = myCake.copyWith(
+            flavor: "",
+            size: "",
+            extraFruits: false,
+            extraNuts: false,
+            extraChocolates: false,
+            extraSprinkles: false,
+            extraFigurine: false
         );
     }
 }
@@ -1031,7 +1074,7 @@ class CustomerDetailsState extends State<CustomerDetails>
     @override
     Widget build(BuildContext context)
     {
-        final List<String> _deliveryOptions =
+        final List<String> deliveryOptions =
             [
                 'Monday',
                 'Tuesday',
@@ -1046,185 +1089,206 @@ class CustomerDetailsState extends State<CustomerDetails>
         final double screenHeight = screenSize.height;
         final TextScaler scaler = MediaQuery.textScalerOf(context);
         double scaledTextSize = scaler.scale(20);
-        return Padding(
-            padding: EdgeInsets.all(screenWidth * 0.04),
-            child: Column(
-                spacing: 20,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                            IconButton(
-                                onPressed: ()
-                                {
-                                },
-                                icon: Icon(
-                                    Icons.arrow_back,
-                                    size: screenWidth * 0.04,
-                                    color: Colors.black87,
-                                ),
-                            ),
-                            Text(
-                                "CUSTOMER DETAILS",
-                                style: TextStyle(
-                                    fontFamily: 'Montserrat',
-                                    letterSpacing: 3,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: scaledTextSize * 1.5,
-                                    color: Colors.black87,
-                                ),
-                            ),
-                            IconButton(
-                                onPressed: ()
-                                {
-                                },
-                                icon: Icon(
-                                    Icons.refresh,
-                                    size: screenWidth * 0.04,
-                                    color: Colors.black87,
-                                ),
-                            )
-                        ],
-                    ),
-                    _textField(_nameController, "Customer Name", Icons.person),
-                    _textField(_addressController, "Delivery Address", Icons.location_on),
-                    _textField(_messageController, "Gift Message", Icons.card_giftcard),
-                    _textField(_instructionsController, "Special Instructions", Icons.note_add),
-
-                    Text(
-                        "MODE OF PAYMENT",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontFamily: 'Montserrat',
-                            letterSpacing: 3,
-                            fontWeight: FontWeight.w600,
-                            fontSize: scaledTextSize * 1.2,
-                            color: Colors.black87,
-                        ),
-                    ),
-                    RadioGroup<String>(
-                        groupValue: _selectedMOP,
-                        onChanged: (String? value)
-                        {
-                            setState(()
-                                {
-                                    _selectedMOP = value;
-                                }
-                            );
-                        }, child: Column(
+        return 
+        Material(
+            type: MaterialType.transparency,
+            child: 
+            Padding(
+                padding: EdgeInsets.all(screenWidth * 0.04),
+                child: Column(
+                    spacing: 20,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                                RadioListTile<String>(
-                                    title: Text(
-                                        "Cash on Delivery",
-                                        style: TextStyle(
-                                            fontSize: scaledTextSize * 1,
-                                            fontFamily: 'Montserrat',
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black87,
-                                        ),
-                                    ),
-                                    secondary: Icon(
-                                        Icons.attach_money_rounded,
+                                IconButton(
+                                    onPressed: ()
+                                    {
+                                        Navigator.pop(context);
+                                    },
+                                    icon: Icon(
+                                        Icons.arrow_back,
                                         size: screenWidth * 0.04,
+                                        color: Colors.black87,
                                     ),
-                                    value: "COD",
-                                    activeColor: Colors.black,
                                 ),
-                                RadioListTile<String>(
-                                    title: Text(
-                                        "E-Wallet",
-                                        style: TextStyle(
-                                            fontSize: scaledTextSize * 1,
-                                            fontFamily: 'Montserrat',
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black87,
-                                        ),
+                                Text(
+                                    "CUSTOMER DETAILS",
+                                    style: TextStyle(
+                                        fontFamily: 'Montserrat',
+                                        letterSpacing: 3,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: scaledTextSize * 1.5,
+                                        color: Colors.black87,
                                     ),
-                                    secondary: Icon(
-                                        Icons.account_balance_wallet_rounded,
+                                ),
+                                IconButton(
+                                    onPressed: ()
+                                    {
+                                        resetForm();
+                                    },
+                                    icon: Icon(
+                                        Icons.refresh,
                                         size: screenWidth * 0.04,
+                                        color: Colors.black87,
                                     ),
-                                    value: "Wallet",
-                                    activeColor: Colors.black,
-                                ),
-                                RadioListTile<String>(
-                                    title: Text(
-                                        "Credit / Debit Card",
-                                        style: TextStyle(
-                                            fontSize: scaledTextSize * 1,
-                                            fontFamily: 'Montserrat',
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black87,
-                                        ),
-                                    ),
-                                    secondary: Icon(
-                                        Icons.credit_card_rounded,
-                                        size: screenWidth * 0.04,
-                                    ),
-                                    value: "Card",
-                                    activeColor: Colors.black,
-                                ),
-                            ]
-                        )
-                    ),
+                                )
+                            ],
+                        ),
+                        _textField(_nameController, "Customer Name", Icons.person),
+                        _textField(_addressController, "Delivery Address", Icons.location_on),
+                        _textField(_messageController, "Gift Message", Icons.card_giftcard),
+                        _textField(_instructionsController, "Special Instructions", Icons.note_add),
 
-                    DropdownButtonFormField<String>(
-                        initialValue: _selectedDelivery,
-                        decoration: InputDecoration(
-                            labelText: "DELIVERY OPTIONS",
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                            ),
-                            prefixIcon: Icon(Icons.calendar_month_rounded),
-                        ),
-                        items: _deliveryOptions.map((String category)
-                            {
-                                return DropdownMenuItem(
-                                    value: category,
-                                    child: Text(category),
-                                );
-                            }
-                        ).toList(),
-                        onChanged: (newValue)
-                        {
-                            setState(()
-                                {
-                                    _selectedDelivery = newValue;
-                                }
-                            );
-                        },
-                    ),
-                    ElevatedButton(
-                        style: ButtonStyle(
-                        ),
-                        onPressed: ()
-                        {
-                            OrderDetails myOrderDetails = OrderDetails(
-                                name: _nameController.text, 
-                                message: _messageController.text, 
-                                address: _addressController.text, 
-                                instructions: _instructionsController.text, 
-                                mop: _selectedMOP.toString(), 
-                                delivery: _selectedDelivery.toString()
-                            );
-                        }, 
-                        child: Text(
-                            "FINISH ORDER",
+                        Text(
+                            "MODE OF PAYMENT",
+                            textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: scaledTextSize * 0.8,
-                                fontFamily: 'Monserrat',
-                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Montserrat',
+                                letterSpacing: 3,
+                                fontWeight: FontWeight.w600,
+                                fontSize: scaledTextSize * 1.2,
                                 color: Colors.black87,
-                                letterSpacing: 1.2,
                             ),
+                        ),
+                        RadioGroup<String>(
+                            groupValue: _selectedMOP,
+                            onChanged: (String? value)
+                            {
+                                setState(()
+                                    {
+                                        _selectedMOP = value;
+                                    }
+                                );
+                            }, child: Column(
+                                children: [
+                                    RadioListTile<String>(
+                                        title: Text(
+                                            "Cash on Delivery",
+                                            style: TextStyle(
+                                                fontSize: scaledTextSize * 1,
+                                                fontFamily: 'Montserrat',
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.black87,
+                                            ),
+                                        ),
+                                        secondary: Icon(
+                                            Icons.attach_money_rounded,
+                                            size: screenWidth * 0.04,
+                                        ),
+                                        value: "COD",
+                                        activeColor: Colors.black,
+                                    ),
+                                    RadioListTile<String>(
+                                        title: Text(
+                                            "E-Wallet",
+                                            style: TextStyle(
+                                                fontSize: scaledTextSize * 1,
+                                                fontFamily: 'Montserrat',
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.black87,
+                                            ),
+                                        ),
+                                        secondary: Icon(
+                                            Icons.account_balance_wallet_rounded,
+                                            size: screenWidth * 0.04,
+                                        ),
+                                        value: "Wallet",
+                                        activeColor: Colors.black,
+                                    ),
+                                    RadioListTile<String>(
+                                        title: Text(
+                                            "Credit / Debit Card",
+                                            style: TextStyle(
+                                                fontSize: scaledTextSize * 1,
+                                                fontFamily: 'Montserrat',
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.black87,
+                                            ),
+                                        ),
+                                        secondary: Icon(
+                                            Icons.credit_card_rounded,
+                                            size: screenWidth * 0.04,
+                                        ),
+                                        value: "Card",
+                                        activeColor: Colors.black,
+                                    ),
+                                ]
+                            )
+                        ),
+
+                        DropdownButtonFormField<String>(
+                            initialValue: _selectedDelivery,
+                            decoration: InputDecoration(
+                                labelText: "DELIVERY OPTIONS",
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                ),
+                                prefixIcon: Icon(Icons.calendar_month_rounded),
+                            ),
+                            items: deliveryOptions.map((String category)
+                                {
+                                    return DropdownMenuItem(
+                                        value: category,
+                                        child: Text(category),
+                                    );
+                                }
+                            ).toList(),
+                            onChanged: (newValue)
+                            {
+                                setState(()
+                                    {
+                                        _selectedDelivery = newValue;
+                                    }
+                                );
+                            },
+                        ),
+                        ElevatedButton(
+                            style: ButtonStyle(
+                            ),
+                            onPressed: ()
+                            {
+                                final OrderDetails myOrderDetails = OrderDetails(
+                                    name: _nameController.text, 
+                                    message: _messageController.text, 
+                                    address: _addressController.text, 
+                                    instructions: _instructionsController.text, 
+                                    mop: _selectedMOP.toString(), 
+                                    delivery: _selectedDelivery.toString()
+                                );
+                            }, 
+                            child: Text(
+                                "FINISH ORDER",
+                                style: TextStyle(
+                                    fontSize: scaledTextSize * 0.8,
+                                    fontFamily: 'Monserrat',
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                    letterSpacing: 1.2,
+                                ),
+
+                            )
 
                         )
+                    ],
+                ),
 
-                    )
-                ],
-            ),
+            )
+        );
+    }
+    void resetForm()
+    {
+        setState(()
+            {
 
+                _nameController.clear();
+                _messageController.clear();
+                _addressController.clear();
+                _instructionsController.clear();
+                _selectedMOP = 'Cash on Delivery';
+                _selectedDelivery = 'Monday';
+            }
         );
     }
 
@@ -1252,8 +1316,9 @@ class PictureButton extends StatelessWidget
     final String imagePath;
     final double price;
     final String foodName;
+    final VoidCallback? onTap;
 
-    const PictureButton({super.key, required this.imagePath, required this.price, required this.foodName});
+    const PictureButton({super.key, required this.imagePath, required this.price, required this.foodName, this.onTap});
 
     @override
     Widget build(BuildContext context)
@@ -1262,7 +1327,7 @@ class PictureButton extends StatelessWidget
         final TextScaler scaler = MediaQuery.textScalerOf(context);
         double scaledTextSize = scaler.scale(20);
         return GestureDetector(
-            onTap: () => print("Tapped"), //Implement onTap function to transfer to another widget or class
+            onTap: onTap,
             child: Column(
                 children: [
                     Expanded(
