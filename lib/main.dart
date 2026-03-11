@@ -116,7 +116,7 @@ class MyApp extends StatelessWidget
         return MaterialApp(
             home: Material(
                 color: Colors.white,
-                child: CustomerDetails(),
+                child: CustomerDetails()
             ),
         );
     }
@@ -275,7 +275,7 @@ class FoodDetailsState extends State<FoodDetails>
                                     icon: Icon(Icons.arrow_back),
                                 ),
                                 Text(
-                                    "Order Details",
+                                    "ORDER DETAILS",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontFamily: 'Montserrat',
@@ -566,129 +566,118 @@ class FoodDetailsState extends State<FoodDetails>
                                             ],
                                         )
                                     ),
-                                    RadioListTile<String>(
-                                        contentPadding: const EdgeInsets.only(right: 50),
-                                        title: Text(
-                                            "Small",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 1,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black87,
-                                            )
-                                        ),
-                                        subtitle: Text(
-                                            "6 inches",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 0.8,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black87,
-                                            ),
-
-                                        ),
-                                        secondary: Text(
-                                            r"$25",
-                                            style: TextStyle(
-                                                fontSize: 24,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black87,
-                                            ),),
-                                        value: "Chocolate",
-                                        groupValue: selectedFlavor,
-                                        activeColor: Colors.black,
+                                    RadioGroup(
+                                        groupValue: myCake.size,
                                         onChanged: (String? value)
                                         {
                                             setState(()
                                                 {
-                                                    selectedFlavor = value;
+                                                    value = myCake.size;
                                                 }
                                             );
-                                        },
-                                    ),
-                                    RadioListTile<String>(
-                                        contentPadding: const EdgeInsets.only(right: 50),
-                                        title: Text(
-                                            "Medium",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 1,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black87,
-                                            )
-                                        ),
-                                        subtitle: Text(
-                                            "8 inches",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 0.8,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black87,
-                                            ),
+                                        }
+                                        ,
+                                        child: Column(
+                                            children: [
+                                                RadioListTile<String>(
+                                                    contentPadding: const EdgeInsets.only(right: 50),
+                                                    title: Text(
+                                                        "Small",
+                                                        style: TextStyle(
+                                                            fontSize: scaledTextSize * 1,
+                                                            fontFamily: 'Montserrat',
+                                                            fontWeight: FontWeight.w600,
+                                                            color: Colors.black87,
+                                                        )
+                                                    ),
+                                                    subtitle: Text(
+                                                        "6 inches",
+                                                        style: TextStyle(
+                                                            fontSize: scaledTextSize * 0.8,
+                                                            fontFamily: 'Montserrat',
+                                                            fontWeight: FontWeight.w500,
+                                                            color: Colors.black87,
+                                                        ),
 
-                                        ),
-                                        secondary: Text(
-                                            r"$40",
-                                            style: TextStyle(
-                                                fontSize: 24,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black87,
-                                            ),),
-                                        value: "Chocolate",
-                                        groupValue: selectedFlavor,
-                                        activeColor: Colors.black,
-                                        onChanged: (String? value)
-                                        {
-                                            setState(()
-                                                {
-                                                    selectedFlavor = value;
-                                                }
-                                            );
-                                        },
-                                    ),
-                                    RadioListTile<String>(
-                                        contentPadding: const EdgeInsets.only(right: 50),
-                                        title: Text(
-                                            "Large",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 1,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black87,
-                                            )
-                                        ),
-                                        subtitle: Text(
-                                            "10 inches",
-                                            style: TextStyle(
-                                                fontSize: scaledTextSize * 0.8,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black87,
-                                            ),
+                                                    ),
+                                                    secondary: Text(
+                                                        r"$25",
+                                                        style: TextStyle(
+                                                            fontSize: 24,
+                                                            fontFamily: 'Montserrat',
+                                                            fontWeight: FontWeight.w500,
+                                                            color: Colors.black87,
+                                                        ),),
+                                                    value: "Small",
+                                                    activeColor: Colors.black,
+                                                ),
+                                                RadioListTile<String>(
+                                                    contentPadding: const EdgeInsets.only(right: 50),
+                                                    title: Text(
+                                                        "Medium",
+                                                        style: TextStyle(
+                                                            fontSize: scaledTextSize * 1,
+                                                            fontFamily: 'Montserrat',
+                                                            fontWeight: FontWeight.w600,
+                                                            color: Colors.black87,
+                                                        )
+                                                    ),
+                                                    subtitle: Text(
+                                                        "8 inches",
+                                                        style: TextStyle(
+                                                            fontSize: scaledTextSize * 0.8,
+                                                            fontFamily: 'Montserrat',
+                                                            fontWeight: FontWeight.w500,
+                                                            color: Colors.black87,
+                                                        ),
 
-                                        ),
-                                        secondary: Text(
-                                            r"$60",
-                                            style: TextStyle(
-                                                fontSize: 24,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black87,
-                                            ),),
-                                        value: "Chocolate",
-                                        groupValue: selectedFlavor,
-                                        activeColor: Colors.black,
-                                        onChanged: (String? value)
-                                        {
-                                            setState(()
-                                                {
-                                                    selectedFlavor = value;
-                                                }
-                                            );
-                                        },
-                                    ),
+                                                    ),
+                                                    secondary: Text(
+                                                        r"$40",
+                                                        style: TextStyle(
+                                                            fontSize: 24,
+                                                            fontFamily: 'Montserrat',
+                                                            fontWeight: FontWeight.w500,
+                                                            color: Colors.black87,
+                                                        ),),
+                                                    value: "Medium",
+                                                    activeColor: Colors.black,
+                                                ),
+                                                RadioListTile<String>(
+                                                    contentPadding: const EdgeInsets.only(right: 50),
+                                                    title: Text(
+                                                        "Large",
+                                                        style: TextStyle(
+                                                            fontSize: scaledTextSize * 1,
+                                                            fontFamily: 'Montserrat',
+                                                            fontWeight: FontWeight.w600,
+                                                            color: Colors.black87,
+                                                        )
+                                                    ),
+                                                    subtitle: Text(
+                                                        "10 inches",
+                                                        style: TextStyle(
+                                                            fontSize: scaledTextSize * 0.8,
+                                                            fontFamily: 'Montserrat',
+                                                            fontWeight: FontWeight.w500,
+                                                            color: Colors.black87,
+                                                        ),
+
+                                                    ),
+                                                    secondary: Text(
+                                                        r"$60",
+                                                        style: TextStyle(
+                                                            fontSize: 24,
+                                                            fontFamily: 'Montserrat',
+                                                            fontWeight: FontWeight.w500,
+                                                            color: Colors.black87,
+                                                        ),),
+                                                    value: "Large",
+                                                    activeColor: Colors.black,
+                                                ),
+                                            ]
+                                        )
+                                    )
                                 ]
                             )
                         ),
@@ -1020,7 +1009,7 @@ class CustomerDetailsState extends State<CustomerDetails>
     String? _selectedDelivery = 'Monday';
 
     @override
-    void initState() 
+    void initState()
     {
         super.initState();
         _nameController = TextEditingController();
@@ -1030,7 +1019,7 @@ class CustomerDetailsState extends State<CustomerDetails>
     }
 
     @override
-    void dispose() 
+    void dispose()
     {
         _nameController.dispose();
         _messageController.dispose();
@@ -1077,7 +1066,7 @@ class CustomerDetailsState extends State<CustomerDetails>
                                 ),
                             ),
                             Text(
-                                "Customer Details",
+                                "CUSTOMER DETAILS",
                                 style: TextStyle(
                                     fontFamily: 'Montserrat',
                                     letterSpacing: 3,
@@ -1205,6 +1194,33 @@ class CustomerDetailsState extends State<CustomerDetails>
                                 }
                             );
                         },
+                    ),
+                    ElevatedButton(
+                        style: ButtonStyle(
+                        ),
+                        onPressed: ()
+                        {
+                            OrderDetails myOrderDetails = OrderDetails(
+                                name: _nameController.text, 
+                                message: _messageController.text, 
+                                address: _addressController.text, 
+                                instructions: _instructionsController.text, 
+                                mop: _selectedMOP.toString(), 
+                                delivery: _selectedDelivery.toString()
+                            );
+                        }, 
+                        child: Text(
+                            "FINISH ORDER",
+                            style: TextStyle(
+                                fontSize: scaledTextSize * 0.8,
+                                fontFamily: 'Monserrat',
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                                letterSpacing: 1.2,
+                            ),
+
+                        )
+
                     )
                 ],
             ),
@@ -1212,11 +1228,12 @@ class CustomerDetailsState extends State<CustomerDetails>
         );
     }
 
-    Widget _textField(TextEditingController controller, String label, IconData icon) 
+    Widget _textField(TextEditingController controller, String label, IconData icon)
     {
         return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: TextField(
+                maxLines: 2,
                 controller: controller,
                 decoration: InputDecoration(
                     labelText: label,
@@ -1229,8 +1246,6 @@ class CustomerDetailsState extends State<CustomerDetails>
         );
     }
 }
-
-
 
 class PictureButton extends StatelessWidget
 {
