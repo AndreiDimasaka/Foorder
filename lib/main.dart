@@ -116,7 +116,7 @@ class MyApp extends StatelessWidget
         return MaterialApp(
             home: Material(
                 color: Colors.white,
-                child: FoodDetails(),
+                child: CustomerDetails(),
             ),
         );
     }
@@ -1012,25 +1012,220 @@ class CustomerDetails extends StatefulWidget
 
 class CustomerDetailsState extends State<CustomerDetails>
 {
+    late TextEditingController _nameController;
+    late TextEditingController _messageController;
+    late TextEditingController _addressController;
+    late TextEditingController _instructionsController;
+    String? _selectedMOP = '';
+    String? _selectedDelivery = 'Monday';
 
     @override
-    Widget build(BuildContext context) 
+    void initState() 
     {
+        super.initState();
+        _nameController = TextEditingController();
+        _messageController = TextEditingController();
+        _addressController = TextEditingController();
+        _instructionsController = TextEditingController();
+    }
+
+    @override
+    void dispose() 
+    {
+        _nameController.dispose();
+        _messageController.dispose();
+        _addressController.dispose();
+        _instructionsController.dispose();
+        super.dispose();
+    }
+
+    @override
+    Widget build(BuildContext context)
+    {
+        final List<String> _deliveryOptions =
+            [
+                'Monday',
+                'Tuesday',
+                'Wednesday',
+                'Thursday',
+                'Friday',
+                'Saturday',
+                'Sunday'
+            ];
         final Size screenSize = MediaQuery.sizeOf(context);
         final double screenWidth = screenSize.width;
         final double screenHeight = screenSize.height;
         final TextScaler scaler = MediaQuery.textScalerOf(context);
         double scaledTextSize = scaler.scale(20);
-
         return Padding(
             padding: EdgeInsets.all(screenWidth * 0.04),
             child: Column(
+                spacing: 20,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                    
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                            IconButton(
+                                onPressed: ()
+                                {
+                                },
+                                icon: Icon(
+                                    Icons.arrow_back,
+                                    size: screenWidth * 0.04,
+                                    color: Colors.black87,
+                                ),
+                            ),
+                            Text(
+                                "Customer Details",
+                                style: TextStyle(
+                                    fontFamily: 'Montserrat',
+                                    letterSpacing: 3,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: scaledTextSize * 1.5,
+                                    color: Colors.black87,
+                                ),
+                            ),
+                            IconButton(
+                                onPressed: ()
+                                {
+                                },
+                                icon: Icon(
+                                    Icons.refresh,
+                                    size: screenWidth * 0.04,
+                                    color: Colors.black87,
+                                ),
+                            )
+                        ],
+                    ),
+                    _textField(_nameController, "Customer Name", Icons.person),
+                    _textField(_addressController, "Delivery Address", Icons.location_on),
+                    _textField(_messageController, "Gift Message", Icons.card_giftcard),
+                    _textField(_instructionsController, "Special Instructions", Icons.note_add),
+
+                    Text(
+                        "MODE OF PAYMENT",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontFamily: 'Montserrat',
+                            letterSpacing: 3,
+                            fontWeight: FontWeight.w600,
+                            fontSize: scaledTextSize * 1.2,
+                            color: Colors.black87,
+                        ),
+                    ),
+                    RadioGroup<String>(
+                        groupValue: _selectedMOP,
+                        onChanged: (String? value)
+                        {
+                            setState(()
+                                {
+                                    _selectedMOP = value;
+                                }
+                            );
+                        }, child: Column(
+                            children: [
+                                RadioListTile<String>(
+                                    title: Text(
+                                        "Cash on Delivery",
+                                        style: TextStyle(
+                                            fontSize: scaledTextSize * 1,
+                                            fontFamily: 'Montserrat',
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black87,
+                                        ),
+                                    ),
+                                    secondary: Icon(
+                                        Icons.attach_money_rounded,
+                                        size: screenWidth * 0.04,
+                                    ),
+                                    value: "COD",
+                                    activeColor: Colors.black,
+                                ),
+                                RadioListTile<String>(
+                                    title: Text(
+                                        "E-Wallet",
+                                        style: TextStyle(
+                                            fontSize: scaledTextSize * 1,
+                                            fontFamily: 'Montserrat',
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black87,
+                                        ),
+                                    ),
+                                    secondary: Icon(
+                                        Icons.account_balance_wallet_rounded,
+                                        size: screenWidth * 0.04,
+                                    ),
+                                    value: "Wallet",
+                                    activeColor: Colors.black,
+                                ),
+                                RadioListTile<String>(
+                                    title: Text(
+                                        "Credit / Debit Card",
+                                        style: TextStyle(
+                                            fontSize: scaledTextSize * 1,
+                                            fontFamily: 'Montserrat',
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black87,
+                                        ),
+                                    ),
+                                    secondary: Icon(
+                                        Icons.credit_card_rounded,
+                                        size: screenWidth * 0.04,
+                                    ),
+                                    value: "Card",
+                                    activeColor: Colors.black,
+                                ),
+                            ]
+                        )
+                    ),
+
+                    DropdownButtonFormField<String>(
+                        initialValue: _selectedDelivery,
+                        decoration: InputDecoration(
+                            labelText: "DELIVERY OPTIONS",
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                            ),
+                            prefixIcon: Icon(Icons.calendar_month_rounded),
+                        ),
+                        items: _deliveryOptions.map((String category)
+                            {
+                                return DropdownMenuItem(
+                                    value: category,
+                                    child: Text(category),
+                                );
+                            }
+                        ).toList(),
+                        onChanged: (newValue)
+                        {
+                            setState(()
+                                {
+                                    _selectedDelivery = newValue;
+                                }
+                            );
+                        },
+                    )
                 ],
             ),
 
+        );
+    }
+
+    Widget _textField(TextEditingController controller, String label, IconData icon) 
+    {
+        return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: TextField(
+                controller: controller,
+                decoration: InputDecoration(
+                    labelText: label,
+                    prefixIcon: Icon(icon),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)
+                    ),
+                ),
+            ),
         );
     }
 }
